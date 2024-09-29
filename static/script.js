@@ -19,6 +19,9 @@ function toggleAll(checkbox) {
 	}
 }
 
-function clear_newdir_bg(div) {
-	document.getElementById('newdir-cb').checked = "";
+function deleteAction() {
+	if (confirm("Confirm Deletion?")) {
+		document.forms.file_manager.formAction = "/delete/{{$location}}";
+		this.click();
+	}
 }

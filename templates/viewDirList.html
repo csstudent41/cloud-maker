@@ -9,7 +9,7 @@
 			<button class="back-button" formaction="/view/{{$location}}/.."> <img src="/static/icons/bs/actions/arrow-left-short.svg"> <b>Back</b> </button>
 			<button class="cut-button" formaction="?action=cut"> <img src="/static/icons/bs/actions/scissors.svg"> <b>Cut</b> </button>
 			<button class="copy-button" formaction="?action=copy"> <img src="/static/icons/bs/actions/copy.svg"> <b>Copy</b> </button>
-			<button class="delete-button" formaction="/delete/{{$location}}"> <img src="/static/icons/bs/actions/trash.svg"> <b>Delete</b> </button>
+			<button class="delete-button" onclick="deleteAction()"> <img src="/static/icons/bs/actions/trash.svg"> <b>Delete</b> </button>
 			<button class="download-button" formaction="/download/{{$location}}"> <img src="/static/icons/bs/actions/download.svg"> <b>Download</b> </button>
 			<input type="checkbox" id="upload-button">
 			<label for="upload-button"><img src="/static/icons/bs/actions/upload.svg"> <b>Upload</b> </label>
@@ -84,18 +84,23 @@
 		</div>
 	</div>
 
+	{{ if .FileCount }}
 	<p class="info">Hint: aestrik (*) indicates mime-type (media type) of file in Info section.</p>
+	{{ else }}
+	<p class="info">Empty Folder</p>
+	{{ end }}
+</form>
 
+<form action="?action=newdir" method="post">
 	<input type="checkbox" id="newdir-cb" name="newdir-cb">
 	<label for="newdir-cb"><img src="/static/icons/bs/actions/folder-plus.svg"></label>
-	<div id="newdir-bg" onclick="clear_newdir_bg()"></div>
+	<div id="newdir-bg" onclick="document.getElementById('newdir-cb').checked = false;"></div>
 	<div id="newdir-box">
 		<p><b>Create New Folder</b></p>
 		<p>
-			<input type="text" name="newdir">
+			<input type="text" name="newdir" placeholder="Folder Name">
 			<button formaction="?action=newdir"><img src="/static/icons/bs/actions/check.svg"></button>
 		</p>
 	</div>
-
 </form>
 {{ end }}

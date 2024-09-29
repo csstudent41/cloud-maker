@@ -19,6 +19,7 @@ func processAction(w http.ResponseWriter, r *http.Request, action string) *Serve
 		case "cancel-copy": return deleteBuffer(w, r, copyBuffer)
 		case "cut-paste": return moveFilesFromBuffer(w, r, cutBuffer)
 		case "copy-paste": return pasteFilesFromBuffer(w, r, copyBuffer)
+		case "newdir": return createNewDirectory(w, r)
 	}
 }
 
@@ -76,6 +77,7 @@ func viewHandler(w http.ResponseWriter, r *http.Request) *ServerError {
 		CutBuffer: cutBuf,
 		CopyCount: len(copyBuf),
 		CopyBuffer: copyBuf,
+		FileCount: len(dirList),
 		File: fileNode,
 	})
 	if err != nil {
@@ -126,7 +128,7 @@ func blockDelete(w http.ResponseWriter, r *http.Request) *ServerError {
 	if serr != nil {
 		return serr
 	}
-	msg += "Delete is currently disabled for security reasons\n"
+	msg += "Delete is currently disabled for testing and security reasons.\n"
 	msg += "You requested to delete following files :-\n\n"
 	for _, file := range files {
 		msg += file.Path + "\n"
@@ -136,7 +138,7 @@ func blockDelete(w http.ResponseWriter, r *http.Request) *ServerError {
 }
 
 func deleteHandler(w http.ResponseWriter, r *http.Request) *ServerError {
-	// return blockDelete(w, r)
+	return blockDelete(w, r)
 	fileNode, files, serr := getSelectedNodes(r)
 	if serr != nil {
 		return serr

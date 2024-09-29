@@ -8,6 +8,7 @@ import (
 type FSData struct {
 	CutCount    int
 	CopyCount   int
+	FileCount   int
 	CutBuffer   []string
 	CopyBuffer  []string
 	File        *FileNode

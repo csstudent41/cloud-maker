@@ -181,3 +181,29 @@ func pasteFilesFromBuffer(w http.ResponseWriter, r *http.Request, bufferPath str
 	deleteBuffer(w, r, bufferPath)
 	return nil
 }
+
+
+func createNewDirectory(w http.ResponseWriter, r *http.Request) *ServerError {
+	fileNode, serr := getFileNode(r.URL.Path)
+	if serr != nil {
+		return serr
+	}
+	dirname := r.FormValue("newdir")
+	msg := "Requested to create directory '"+dirname+"' in "+fileNode.URI+"\n"
+	if !fileNode.IsDir {
+		msg = "Cannot create directory, the given destination is a file.\n" + msg
+		return &ServerError{nil, msg, 400}
+	}
+	path := filepath.Join(fileNode.Path, dirname)
+	isExist, err := fileExists(path)
+	if isExist {
+		msg = "Cannot create directory, a file with given name already exists.\n" + msg
+		return &ServerError{nil, msg, 400}
+	}
+	err = os.Mkdir(path, 0755)
+	if err != nil {
+		return &ServerError{err, "", 500}
+	}
+	http.Redirect(w, r, r.URL.Path, 303)
+	return nil
+}
