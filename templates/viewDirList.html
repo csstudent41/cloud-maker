@@ -1,0 +1,101 @@
+{{ define "main" }}
+{{ $location := .File.URI }}
+{{ $path := .File.Path }}
+<form id="file_manager" name="file_manager" method="post">
+
+	<div class="form-header">
+		<h3 class="html-path clickable">{{ .File.HTMLPath }}</h3>
+		<div class="form-actions clickable">
+			<button class="back-button" formaction="/view/{{$location}}/.."> <img src="/static/icons/bs/actions/arrow-left-short.svg"> <b>Back</b> </button>
+			<button class="cut-button" formaction="?action=cut"> <img src="/static/icons/bs/actions/scissors.svg"> <b>Cut</b> </button>
+			<button class="copy-button" formaction="?action=copy"> <img src="/static/icons/bs/actions/copy.svg"> <b>Copy</b> </button>
+			<button class="delete-button" formaction="/delete/{{$location}}"> <img src="/static/icons/bs/actions/trash.svg"> <b>Delete</b> </button>
+			<button class="download-button" formaction="/download/{{$location}}"> <img src="/static/icons/bs/actions/download.svg"> <b>Download</b> </button>
+			<input type="checkbox" id="upload-button">
+			<label for="upload-button"><img src="/static/icons/bs/actions/upload.svg"> <b>Upload</b> </label>
+			<div id="file-upload-box">
+				<input type="file" multiple>
+				<span class="actions">
+					<button type="submit"><img src="/static/icons/bs/actions/upload.svg"> <b>Submit</b> </button>
+				</span>
+			</div>
+		</div>
+
+		{{ if .CutCount }}
+		<details id="cut-buffer">
+			<summary class="clickable">
+				<span> <img src="/static/icons/bs/actions/scissors.svg"> Files in Cut Buffer ({{ .CutCount }}) </span>
+				<span class="actions">
+					<button type="submit" class="paste-button" formaction="/view/{{$location}}?action=cut-paste">
+						<img src="/static/icons/bs/actions/clipboard.svg"> <b>Paste</b>
+					</button>
+					<button type="submit" class="clear-button" formaction="/view/{{$location}}?action=cancel-cut">
+						<img src="/static/icons/bs/actions/backspace.svg"> <b>Clear</b>
+					</button>
+				</span>
+			</summary>
+			<div class="content">
+				{{ range .CutBuffer }} <div>{{ . }}</div> {{ end }}
+			</div>
+		</details>
+		{{ end }}
+
+		{{ if .CopyCount }}
+		<details id="copy-buffer">
+			<summary class="clickable">
+				<span> <img class="icon" src="/static/icons/bs/actions/copy.svg"> Files in Copy Buffer ({{ .CopyCount }}) </span>
+				<span class="actions">
+					<button type="submit" class="paste-button" formaction="/view/{{$location}}?action=copy-paste"> <img src="/static/icons/bs/actions/clipboard.svg"> <b>Paste</b> </button>
+					<button type="submit" class="clear-button" formaction="/view/{{$location}}?action=cancel-copy"> <img src="/static/icons/bs/actions/backspace.svg"> <b>Clear</b> </button>
+				</span>
+			</summary>
+			<div class="content">
+				{{ range .CopyBuffer }} <div>{{ . }}</div> {{ end }}
+			</div>
+		</details>
+		{{ end }}
+	</div>
+
+	<div class="table clickable" id="file-list">
+		<div class="thead">
+			<label class="tr" for="file-list-header">
+				<input class="th" type="checkbox" id="file-list-header" name="file-list-header" onchange="toggleAll(this)">
+				<span class="th"></span>
+				<span class="th">File</span>
+				<span class="th">Size</span>
+				<span class="th">Date</span>
+				<span class="th">Time</span>
+				<span class="th">Info</span>
+			</label>
+		</div>
+		<div class="tbody">
+			{{ range .File.Data }}
+			{{ $name := .Info.Name }}
+			<label class="tr mode-{{.Mode}}" for="-file-entry--{{$name}}">
+				<input class="td" type="checkbox" id="-file-entry--{{$name}}" name="-file-entry--{{$name}}">
+				<span class="td"><img src="{{.IconPath}}"></span>
+				<span class="td"><a href="/view/{{$location}}/{{$name}}">{{$name}}</a></span>
+				<span class="td">{{ .Size }}</span>
+				<span class="td">{{ .ModDate }}</span>
+				<span class="td">{{ .ModTime }}</span>
+				<span class="td">{{ .Details }}</span>
+			</label>
+			{{ end }}
+		</div>
+	</div>
+
+	<p class="info">Hint: aestrik (*) indicates mime-type (media type) of file in Info section.</p>
+
+	<input type="checkbox" id="newdir-cb" name="newdir-cb">
+	<label for="newdir-cb"><img src="/static/icons/bs/actions/folder-plus.svg"></label>
+	<div id="newdir-bg" onclick="clear_newdir_bg()"></div>
+	<div id="newdir-box">
+		<p><b>Create New Folder</b></p>
+		<p>
+			<input type="text" name="newdir">
+			<button formaction="?action=newdir"><img src="/static/icons/bs/actions/check.svg"></button>
+		</p>
+	</div>
+
+</form>
+{{ end }}
