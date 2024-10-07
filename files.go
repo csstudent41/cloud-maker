@@ -12,7 +12,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"syscall"
+	// "syscall"
 )
 
 type MalformedLinkError struct {
@@ -373,6 +373,7 @@ func copyTo(src, dstDir string) error {
 	}
 	dst := filepath.Join(dstDir, info.Name())
 
+	fmt.Printf("Copying %s to %s\n", src, dstDir)
 	switch info.Mode() & os.ModeType {
 	case os.ModeDir:
 		if err := os.MkdirAll(dst, 0755); err != nil {
@@ -390,14 +391,17 @@ func copyTo(src, dstDir string) error {
 			return err
 		}
 	}
+	fmt.Println("Finished Copying.\n\n")
 
-	stat, ok := info.Sys().(*syscall.Stat_t)
-	if !ok {
-		return fmt.Errorf("failed to get raw syscall.Stat_t data for '%s'", src)
-	}
-	if err := os.Lchown(dst, int(stat.Uid), int(stat.Gid)); err != nil {
-		return err
-	}
+	/*
+		stat, ok := info.Sys().(*syscall.Stat_t)
+		if !ok {
+			return fmt.Errorf("failed to get raw syscall.Stat_t data for '%s'", src)
+		}
+		if err := os.Lchown(dst, int(stat.Uid), int(stat.Gid)); err != nil {
+			return err
+		}
+	*/
 
 	if info.Mode()&os.ModeSymlink == 0 {
 		return os.Chmod(dst, info.Mode())

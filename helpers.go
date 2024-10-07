@@ -4,7 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
+	"os/user"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -20,16 +22,12 @@ func (e *ServerError) Error() string { return e.Err.Error() }
 func (e *ServerError) Unwrap() error { return e.Err }
 
 
-var (
-	homeDir = "/home/master/Dev/test.test/"
-	dataDir = "/tmp/cloud/"
-	cutBuffer = filepath.Join(dataDir, "cut_buffer")
-	copyBuffer = filepath.Join(dataDir, "copy_buffer")
-)
-
-
-func getFileNode(url string) (*FileNode, *ServerError) {
-	p := strings.Split(url, "/")
+func getFileNode(URL string) (*FileNode, *ServerError) {
+	path, err := url.PathUnescape(URL)
+	if err != nil {
+		return nil, &ServerError{err, "", 500}
+	}
+	p := strings.Split(path, "/")
 	fileURI := strings.Trim(strings.Join(p[2:], "/"), "/")
 	filePath := filepath.Join(homeDir, fileURI)
 
@@ -57,7 +55,7 @@ func getSelectedNodes(r *http.Request) (*FileNode, []*FileNode, *ServerError) {
 	if e != nil {
 		return nil, nil, e
 	}
-	r.ParseForm()
+	r.ParseMultipartForm(65536)
 	fmt.Println(r.Form)
 	var fileNames []string
 	for key := range r.Form {
@@ -188,7 +186,7 @@ func createNewDirectory(w http.ResponseWriter, r *http.Request) *ServerError {
 	if serr != nil {
 		return serr
 	}
-	dirname := r.FormValue("newdir")
+	dirname := strings.TrimSpace(r.FormValue("newdir"))
 	msg := "Requested to create directory '"+dirname+"' in "+fileNode.URI+"\n"
 	if !fileNode.IsDir {
 		msg = "Cannot create directory, the given destination is a file.\n" + msg
@@ -207,3 +205,84 @@ func createNewDirectory(w http.ResponseWriter, r *http.Request) *ServerError {
 	http.Redirect(w, r, r.URL.Path, 303)
 	return nil
 }
+
+
+var (
+	homeDir = "/media/"
+	dataDir = "/tmp/cloud/"
+	cutBuffer = filepath.Join(dataDir, "cut_buffer")
+	copyBuffer = filepath.Join(dataDir, "copy_buffer")
+)
+
+
+func init() {
+	err := os.MkdirAll(dataDir, 0755)
+	if err != nil {
+		panic(err)
+	}
+	home := os.Getenv("CLOUD_MAKER_HOME")
+	if home != "" {
+		isExist, err := fileExists(home)
+		if err != nil {
+			panic(err)
+		}
+		if isExist {
+			homeDir = home
+		}
+		return
+	}
+
+	u, err := user.Current()
+	if err != nil {
+		panic(err)
+	}
+	homeDir += u.Username
+}
+
+
+func blockAction(w http.ResponseWriter, r *http.Request, action string) *ServerError {
+	msg := ""
+	_, files, serr := getSelectedNodes(r)
+	if serr != nil {
+		return serr
+	}
+	msg += "The " + action + " operation is currently disabled for testing and security reasons.\n"
+	msg += "You requested to " + action + " following files :-\n\n"
+	for _, file := range files {
+		msg += file.Path + "\n"
+	}
+	fmt.Fprintf(w, msg)
+	return nil
+}
+
+
+func deleteSelectedFiles(w http.ResponseWriter, r *http.Request) *ServerError {
+	// return blockAction(w, r, "delete")
+	fileNode, files, serr := getSelectedNodes(r)
+	if serr != nil {
+		return serr
+	}
+	for _, file := range files {
+		if file.Path == homeDir {
+			return &ServerError{nil, "Cannot delete root directory.", 400}
+		}
+		fmt.Printf("Deleting: %s\n", file.Path)
+		err := os.RemoveAll(file.Path)
+		if err != nil {
+			return &ServerError{err, "", 500}
+		}
+		fmt.Println("Deleted.")
+	}
+	isExist, err := fileExists(fileNode.Path)
+	if err != nil {
+		return &ServerError{err, "", 500}
+	}
+	if !isExist {
+		http.Redirect(w, r, "/view/" + filepath.Dir(fileNode.URI), 303)
+	} else {
+		http.Redirect(w, r, "/view/" + fileNode.URI, 303)
+	}
+	return nil
+}
+
+

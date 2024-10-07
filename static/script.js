@@ -2,7 +2,7 @@
 "use warnings";
 
 function checkAll(checked, scope) {
-	var inputs = scope.getElementsByTagName('input');
+	let inputs = scope.getElementsByTagName('input');
 	for (var i = 0; i < inputs.length; i++) {
 		if (inputs[i].type.toLowerCase() == 'checkbox') {
 			inputs[i].checked = checked;
@@ -11,17 +11,31 @@ function checkAll(checked, scope) {
 }
 
 function toggleAll(checkbox) {
-	var scope = document.getElementById('file-list')
+	let scope = document.getElementById('file-list')
 	if (checkbox.checked) {
-		checkAll("checked", scope);
+		checkAll(true, scope);
 	} else {
-		checkAll("", scope);
+		checkAll(false, scope);
 	}
 }
 
-function deleteAction() {
-	if (confirm("Confirm Deletion?")) {
-		document.forms.file_manager.formAction = "/delete/{{$location}}";
-		this.click();
+function deleteAction(button) {
+	let table = document.getElementById('file-list')
+	let tbody = table.getElementsByClassName('tbody')[0]
+	let inputs = tbody.getElementsByTagName('input')
+	let msg = 0;
+	for (var i = 0; i < inputs.length; i++) {
+		inputs[i].type.toLowerCase() == 'checkbox' &&
+			inputs[i].checked && msg++;
+	}
+	if (msg == 0) {
+		msg = "Whole Folder will be deleted."
+	} else {
+		msg += " file(s) selected."
+	}
+	if (confirm(msg + " Confirm Deletion?")) {
+		button.formAction = "?action=delete";
+		button.onclick = "submit()";
+		button.click();
 	}
 }

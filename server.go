@@ -2,7 +2,10 @@ package main
 
 import (
 	"archive/zip"
+	"crypto/sha256"
+	"crypto/subtle"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -20,6 +23,7 @@ func processAction(w http.ResponseWriter, r *http.Request, action string) *Serve
 		case "cut-paste": return moveFilesFromBuffer(w, r, cutBuffer)
 		case "copy-paste": return pasteFilesFromBuffer(w, r, copyBuffer)
 		case "newdir": return createNewDirectory(w, r)
+		case "delete": return deleteSelectedFiles(w, r)
 	}
 }
 
@@ -30,11 +34,8 @@ func viewHandler(w http.ResponseWriter, r *http.Request) *ServerError {
 	for k, v := range r.URL.Query() {
 		switch k {
 			default: http.Redirect(w, r, r.URL.Path, 302)
-			case "action": serr = processAction(w, r, v[0])
+			case "action": return processAction(w, r, v[0])
 		}
-	}
-	if serr != nil {
-		return serr
 	}
 	fileNode, serr := getFileNode(r.URL.Path)
 	if serr != nil {
@@ -89,7 +90,6 @@ func viewHandler(w http.ResponseWriter, r *http.Request) *ServerError {
 
 func downloadHandler(w http.ResponseWriter, r *http.Request) *ServerError {
 	fmt.Printf("%s\n", r.Form)
-	return nil
 	fileNode, files, serr := getSelectedNodes(r)
 	if serr != nil {
 		return serr
@@ -122,48 +122,34 @@ func downloadHandler(w http.ResponseWriter, r *http.Request) *ServerError {
 }
 
 
-func blockDelete(w http.ResponseWriter, r *http.Request) *ServerError {
-	msg := ""
-	_, files, serr := getSelectedNodes(r)
+func uploadHandler(w http.ResponseWriter, r *http.Request) *ServerError {
+	fileNode, serr := getFileNode(r.URL.Path)
 	if serr != nil {
 		return serr
 	}
-	msg += "Delete is currently disabled for testing and security reasons.\n"
-	msg += "You requested to delete following files :-\n\n"
-	for _, file := range files {
-		msg += file.Path + "\n"
-	}
-	fmt.Fprintf(w, msg)
-	return nil
-}
+	r.ParseMultipartForm(65536)
+	formData := r.MultipartForm
 
-func deleteHandler(w http.ResponseWriter, r *http.Request) *ServerError {
-	return blockDelete(w, r)
-	fileNode, files, serr := getSelectedNodes(r)
-	if serr != nil {
-		return serr
-	}
-	for _, file := range files {
-		err := os.RemoveAll(file.Path)
+	for _, handler := range formData.File["attachments"] {
+		fmt.Printf("%v\n", handler.Header)
+		fmt.Println(handler.Filename, ":", handler.Size)
+		file, err := handler.Open()
 		if err != nil {
 			return &ServerError{err, "", 500}
 		}
+		defer file.Close()
+		filepath := filepath.Join(fileNode.Path, handler.Filename)
+		fmt.Printf("Saving to %v...", filepath)
+		f, err := os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE, 0666)
+		if err != nil {
+			return &ServerError{err, "", 500}
+		}
+		defer f.Close()
+		io.Copy(f, file)
+		fmt.Println("Saved.")
 	}
-	isExist, err := fileExists(fileNode.Path)
-	if err != nil {
-		return &ServerError{err, "", 500}
-	}
-	if !isExist {
-		http.Redirect(w, r, "/view/" + filepath.Dir(fileNode.URI), 303)
-	} else {
-		http.Redirect(w, r, "/view/" + fileNode.URI, 303)
-	}
+	http.Redirect(w, r, "/view/" + fileNode.URI, 303)
 	return nil
-}
-
-
-func uploadHandler(w http.ResponseWriter, r *http.Request) *ServerError {
-	return &ServerError{nil, "Not implemented.", 404}
 }
 
 
@@ -192,6 +178,26 @@ func handler(w http.ResponseWriter, r *http.Request) *ServerError {
 type httpHandler func(http.ResponseWriter, *http.Request) *ServerError
 
 func (fn httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	username, password, ok := r.BasicAuth()
+	if !ok {
+		w.Header().Add("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
+		http.Error(w, "Basic Auth Missing.", 401)
+		return
+	}
+
+	usernameHash := sha256.Sum256([]byte(username))
+	passwordHash := sha256.Sum256([]byte(password))
+	expectedUsernameHash := sha256.Sum256([]byte("user"))
+	expectedPasswordHash := sha256.Sum256([]byte("123"))
+	usernameMatch := (subtle.ConstantTimeCompare(usernameHash[:], expectedUsernameHash[:]) == 1)
+	passwordMatch := (subtle.ConstantTimeCompare(passwordHash[:], expectedPasswordHash[:]) == 1)
+
+	if !usernameMatch || !passwordMatch {
+		w.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
+		http.Error(w, "Unauthrized", http.StatusUnauthorized)
+		return
+	}
+
 	if serr := fn(w, r); serr != nil {
 		if serr.Err != nil {
 			fmt.Println("\n\nError Type:", reflect.TypeOf(serr.Err))
@@ -211,9 +217,8 @@ func main() {
 	http.Handle("/view/", httpHandler(viewHandler))
 	http.Handle("/upload/", httpHandler(uploadHandler))
 	http.Handle("/download/", httpHandler(downloadHandler))
-	http.Handle("/delete/", httpHandler(deleteHandler))
 	http.Handle("/file/", httpHandler(fileHandler))
 	http.Handle("/static/", http.StripPrefix("/static/", fileServer))
-	fmt.Println("Server Listening on :8080")
+	fmt.Println("\nServer Listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

@@ -1,22 +1,22 @@
 {{ define "main" }}
 {{ $location := .File.URI }}
 {{ $path := .File.Path }}
-<form id="file_manager" name="file_manager" method="post">
+<form id="file_manager" name="file_manager" enctype="multipart/form-data" method="post">
 
 	<div class="form-header">
-		<h3 class="html-path clickable">{{ .File.HTMLPath }}</h3>
+		<h4 class="html-path clickable">{{ .File.HTMLPath }}</h4>
 		<div class="form-actions clickable">
 			<button class="back-button" formaction="/view/{{$location}}/.."> <img src="/static/icons/bs/actions/arrow-left-short.svg"> <b>Back</b> </button>
 			<button class="cut-button" formaction="?action=cut"> <img src="/static/icons/bs/actions/scissors.svg"> <b>Cut</b> </button>
 			<button class="copy-button" formaction="?action=copy"> <img src="/static/icons/bs/actions/copy.svg"> <b>Copy</b> </button>
-			<button class="delete-button" onclick="deleteAction()"> <img src="/static/icons/bs/actions/trash.svg"> <b>Delete</b> </button>
+			<button class="delete-button" onclick="deleteAction(this)"> <img src="/static/icons/bs/actions/trash.svg"> <b>Delete</b> </button>
 			<button class="download-button" formaction="/download/{{$location}}"> <img src="/static/icons/bs/actions/download.svg"> <b>Download</b> </button>
 			<input type="checkbox" id="upload-button">
 			<label for="upload-button"><img src="/static/icons/bs/actions/upload.svg"> <b>Upload</b> </label>
 			<div id="file-upload-box">
-				<input type="file" multiple>
+				<input type="file" name="attachments" multiple>
 				<span class="actions">
-					<button type="submit"><img src="/static/icons/bs/actions/upload.svg"> <b>Submit</b> </button>
+					<button formaction="/upload/{{$location}}"><img src="/static/icons/bs/actions/upload.svg"> <b>Submit</b> </button>
 				</span>
 			</div>
 		</div>
@@ -26,10 +26,10 @@
 			<summary class="clickable">
 				<span> <img src="/static/icons/bs/actions/scissors.svg"> Files in Cut Buffer ({{ .CutCount }}) </span>
 				<span class="actions">
-					<button type="submit" class="paste-button" formaction="/view/{{$location}}?action=cut-paste">
+					<button type="submit" class="paste-button" formaction="?action=cut-paste">
 						<img src="/static/icons/bs/actions/clipboard.svg"> <b>Paste</b>
 					</button>
-					<button type="submit" class="clear-button" formaction="/view/{{$location}}?action=cancel-cut">
+					<button type="submit" class="clear-button" formaction="?action=cancel-cut">
 						<img src="/static/icons/bs/actions/backspace.svg"> <b>Clear</b>
 					</button>
 				</span>
@@ -85,9 +85,9 @@
 	</div>
 
 	{{ if .FileCount }}
-	<p class="info">Hint: aestrik (*) indicates mime-type (media type) of file in Info section.</p>
+	<p class="info hint">Hint: aestrik (*) indicates mime-type (media type) of file in Info section.</p>
 	{{ else }}
-	<p class="info">Empty Folder</p>
+	<p class="info empty-folder-msg">Empty Folder</p>
 	{{ end }}
 </form>
 
