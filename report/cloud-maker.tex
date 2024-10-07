@@ -1,5 +1,5 @@
 \documentclass[12pt]{article}
-\usepackage[top=3cm, left=3cm, right=3cm]{geometry}
+\usepackage[top=2cm, left=3cm, right=3cm]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{times}
@@ -12,7 +12,7 @@
 \usepackage{tikz-uml}
 \usepackage{pgfgantt}
 
-% \date{06 Oct, 2024}
+\date{06 Oct, 2024}
 \title{Cloud Maker}
 \author{Vikas Kushwaha}
 
@@ -69,6 +69,9 @@
 \item[]}{\end{list}}
 
 \renewcommand\theadfont{\bfseries}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 
 
 \begin{document}
@@ -89,14 +92,15 @@
 	\textit{under the guidance of} \\
 	\textbf{Mrs. Swetha Iyer} \\
 	\textbf{Department of Computer Science} \\
-	\bigskip\includegraphics[scale=0.25]{vartak-logo} \\
+	\vspace{1cm}
+	\includegraphics[scale=0.25]{vartak-logo} \\
 	\fontsize{14pt}{20pt}\selectfont
 	\textbf{VIDYAVARDHINI'S} \\
 	\textbf{A. V. COLLEGE OF ARTS, K. M. COLLEGE OF COMMERCE} \\
 	\textbf{E. S. A. COLLEGE OF SCIENCE,} \\
 	\textbf{VASAI(WEST), PALGHAR-401208, MAHARASHTRA} \\
-	\textbf{(Sem V)} \\
 	\fontsize{14pt}{28pt}\selectfont
+	\textbf{(Sem V)} \\
 	\textbf{(2024-25)} \\
 \end{center}
 
@@ -141,13 +145,100 @@ submitted in the partial fulfillment for the award of Bachelor of Science in Com
 \bigskip
 \textbf{Date:} \\
 
-\fontsize{12pt}{18pt}\selectfont
+
+\section{Plagarism Report}
+
+
+\section{Gantt Chart}
+
+
+\section{Table Of Content}
+\vfill
+\begin{center}
+\begin{tabular}{ | C{2cm} | m{8cm} | C{2cm} | m{2cm} | }
+	\hline
+	\thead{Sr. No} & \thead{Contents} & \thead{Page No.} & \thead{Sign} \\
+	\hline
+	\hline\textbf{1.}  & \textbf{Introduction} & \textbf{} & \\
+	\hline\textbf{2.}  & \textbf{Limitation of Current System} & \textbf{} & \\
+	\hline\textbf{3.}  & \textbf{Advantages of Proposed System} & \textbf{} & \\
+	\hline\textbf{4.}  & \textbf{Feasibility Study} & \textbf{} & \\
+	\hline\textbf{5.}  & \textbf{Requirement Specification} & \textbf{} & \\
+	\hline\textbf{6.}  &
+	\bgroup
+	\def\arraystretch{0.7}%
+	\begin{tabular}{L{0.7cm} l}
+		& \textbf{System Design} \\
+		\textbf{(A)} & Event Table \\
+		\textbf{(B)} & ER Diagram \\
+		\textbf{(C)} & Class Diagram \\
+		\textbf{(D)} & Use Case Diagram \\
+		\textbf{(E)} & Sequence Diagram \\
+		\textbf{(F)} & Component Diagram \\
+		\textbf{(G)} & Deployment Diagram \\
+		\textbf{(H)} & Activity Diagram \\
+		\textbf{(I)} & Database \\
+	\end{tabular}
+	\egroup
+		& \textbf{} & \\
+	\hline\textbf{7.}  & \textbf{System Implementation} & \textbf{} & \\
+	\hline\textbf{8.}  & \textbf{Results} & \textbf{} & \\
+	\hline\textbf{9.}  & \textbf{Conclusion} & \textbf{} & \\
+	\hline\textbf{10.} & \textbf{References} & \textbf{} & \\
+	\hline
+\end{tabular}
+\end{center}
+\vfill
+
+
+\section{Introduction}
+
+
+\section{Limitations of Current System}
+
+
+\section{Advantages of Pruposed System}
+
+
+\section{Feasability Study}
+
+
+\section{Requirement Specification}
+\vspace{2cm}
+\begin{enumerate}
+	\item \textbf{Hardware Requirements:} \\ \\
+		For Endpoint Server,
+		\begin{itemize}
+			\item Rasberry PI Model B+ or newer
+			\item 16GB Memory Card
+			\item External Storage Drives of User Preferred Size
+		\end{itemize}
+		For Client Device,
+		\begin{itemize}
+			\item Connection to Endpoint Rasberry Pi Server (LAN / WAN)
+		\end{itemize}
+
+	\vspace{1cm}
+	\item \textbf{Software Requirements:} \\ \\
+		For Endpoint Server,
+		\begin{itemize}
+				\item OS: Debian Raspi Linux
+				\item Shell: Bash
+				\item Programming Language: Go
+		\end{itemize}
+		For Client Device,
+		\begin{itemize}
+			\item Any OS with latest Web Browser
+		\end{itemize}
+\end{enumerate}
+
+\fontsize{12pt}{16pt}\selectfont
 
 \section{Event Table}
 \begin{changemargin}{-1cm}{-1cm}
 \vfill
 \begin{center}
-\begin{tabular}{ | m{2cm} | m{3.5cm} | m{1.5cm} | m{4cm} | m{2cm} | m{2cm} | }
+\begin{tabular}{ | C{2cm} | C{3cm} | C{2cm} | C{3cm} | C{3cm} | C{2cm} | }
 	\hline
 	\thead{Event} &
 	\thead{Trigger} &
@@ -332,6 +423,7 @@ Stage 1: Connect to Cloud Storage \\
 \clearpage
 \vfill
 Stage 2: Open Files and perform Actions \\
+\vspace{2cm}
 \begin{center}
 \begin{tikzpicture}
 \begin{umlseqdiag}
@@ -467,7 +559,8 @@ Stage 2: Open Files and perform Actions \\
 \section{Database}
 \vfill
 \begin{center}
-Representation of File Metadata in File System \\
+Representation of File Metadata in File System. \\
+\bigskip
 \begin{tabular}{ | m{4cm} | m{3cm} | m{3cm} | m{3cm} | }
 	\hline
 	\thead{Attribute} &
@@ -485,42 +578,54 @@ Representation of File Metadata in File System \\
 \vfill
 
 
-\section{Gantt Chart}
-\vfill
-\begin{center}
-\begin{ganttchart}[
-		hgrid=true,
-		vgrid={*2{dotted}, {dashed}, *3{dotted}, {dashed}, *4{dotted}, {dashed}},
-		y unit chart=0.8cm,
-		title height=1,
-		expand chart=\textwidth,
-		bar label node/.append style={align=right},
-		bar height=0.5,
-		exed/.style={bar top shift=0.5},
-		real/.style={bar top shift=0.1, bar/.append style={fill=black}},
-	]{1}{15}
-	\gantttitle{2024}{15} \ganttnewline[draw=none]
-	\gantttitle{June}{3}
-	\gantttitle{July}{4}
-	\gantttitle{August}{5}
-	\gantttitle{September}{3} \\
-	\gantttitlelist{1,...,3}{1}
-	\gantttitlelist{1,...,4}{1}
-	\gantttitlelist{1,...,5}{1}
-	\gantttitlelist{1,...,3}{1} \\
-	\ganttbar[exed]{Requirements \\ Specification}{1}{1} \\
-	\ganttbar[real]{}{1}{2} \\
-	\ganttbar[exed]{Analysis}{2}{3} \\
-	\ganttbar[real]{}{3}{4} \\
-	\ganttbar[exed]{Design}{4}{5} \\
-	\ganttbar[real]{}{5}{7} \\
-	\ganttbar[exed]{Coding and \\ Testing}{6}{11} \\
-	\ganttbar[real]{}{8}{12} \\
-	\ganttbar[exed]{Implementation}{12}{13} \\
-	\ganttbar[real]{}{13}{15} \\
-\end{ganttchart}
-\end{center}
-\vfill
+% \section{Gantt Chart}
+% \vfill
+% \begin{center}
+% \begin{ganttchart}[
+% 		hgrid=true,
+% 		vgrid={*2{dotted}, {dashed}, *3{dotted}, {dashed}, *4{dotted}, {dashed}},
+% 		y unit chart=0.8cm,
+% 		title height=1,
+% 		expand chart=\textwidth,
+% 		bar label node/.append style={align=right},
+% 		bar height=0.5,
+% 		exed/.style={bar top shift=0.5},
+% 		real/.style={bar top shift=0.1, bar/.append style={fill=black}},
+% 	]{1}{15}
+% 	\gantttitle{2024}{15} \ganttnewline[draw=none]
+% 	\gantttitle{June}{3}
+% 	\gantttitle{July}{4}
+% 	\gantttitle{August}{5}
+% 	\gantttitle{September}{3} \\
+% 	\gantttitlelist{1,...,3}{1}
+% 	\gantttitlelist{1,...,4}{1}
+% 	\gantttitlelist{1,...,5}{1}
+% 	\gantttitlelist{1,...,3}{1} \\
+% 	\ganttbar[exed]{Requirements \\ Specification}{1}{1} \\
+% 	\ganttbar[real]{}{1}{2} \\
+% 	\ganttbar[exed]{Analysis}{2}{3} \\
+% 	\ganttbar[real]{}{3}{4} \\
+% 	\ganttbar[exed]{Design}{4}{5} \\
+% 	\ganttbar[real]{}{5}{7} \\
+% 	\ganttbar[exed]{Coding and \\ Testing}{6}{11} \\
+% 	\ganttbar[real]{}{8}{12} \\
+% 	\ganttbar[exed]{Implementation}{12}{13} \\
+% 	\ganttbar[real]{}{13}{15} \\
+% \end{ganttchart}
+% \end{center}
+% \vfill
+
+
+\section{System Implementation}
+
+
+\section{Results}
+
+
+\section{Conclusion}
+
+
+\section{References}
 
 
 \end{document}
