@@ -193,11 +193,11 @@ submitted in the partial fulfillment for the award of Bachelor of Science in Com
 	\hline
 	\thead{Sr. No} & \thead{Contents} & \thead{Page No.} & \thead{Sign} \\
 	\hline
-	\hline\textbf{1.}  & \textbf{Introduction} & \textbf{} & \\
-	\hline\textbf{2.}  & \textbf{Limitation of Current System} & \textbf{} & \\
-	\hline\textbf{3.}  & \textbf{Advantages of Proposed System} & \textbf{} & \\
-	\hline\textbf{4.}  & \textbf{Tools and Techniques} & \textbf{} & \\
-	\hline\textbf{5.}  & \textbf{Requirement Specification} & \textbf{} & \\
+	\hline\textbf{1.}  & \textbf{Introduction} & \textbf{7} & \\
+	\hline\textbf{2.}  & \textbf{Limitation of Current System} & \textbf{8} & \\
+	\hline\textbf{3.}  & \textbf{Advantages of Proposed System} & \textbf{9} & \\
+	\hline\textbf{4.}  & \textbf{Tools and Techniques} & \textbf{10} & \\
+	\hline\textbf{5.}  & \textbf{Requirement Specification} & \textbf{11} & \\
 	\hline\textbf{6.}  &
 	\bgroup
 	\def\arraystretch{0.7}%
@@ -214,11 +214,11 @@ submitted in the partial fulfillment for the award of Bachelor of Science in Com
 		\textbf{(I)} & Database \\
 	\end{tabular}
 	\egroup
-		& \textbf{} & \\
-	\hline\textbf{7.}  & \textbf{System Implementation} & \textbf{} & \\
-	\hline\textbf{8.}  & \textbf{Results} & \textbf{} & \\
-	\hline\textbf{9.}  & \textbf{Conclusion} & \textbf{} & \\
-	\hline\textbf{10.} & \textbf{References} & \textbf{} & \\
+		& \textbf{12 - 20} & \\
+	\hline\textbf{7.}  & \textbf{System Implementation} & \textbf{21 - 47} & \\
+	\hline\textbf{8.}  & \textbf{Results} & \textbf{48 - 51} & \\
+	\hline\textbf{9.}  & \textbf{Conclusion} & \textbf{52} & \\
+	\hline\textbf{10.} & \textbf{References} & \textbf{53} & \\
 	\hline
 \end{tabular}
 \end{center}
@@ -372,42 +372,6 @@ The Web Interface can be accessed through any computer or mobile device. The use
 \end{changemargin}
 
 
-\section{Class Diagram}
-\vfill
-\begin{center}
-\begin{tikzpicture}[
-		class/.style={minimum width=6cm},
-	]
-	\umlclass[class]{FSData}{
-		CutCount: int \\
-		CopyCount: int \\
-		FileCount: int \\
-		CutBuffer: []string \\
-		CopyBuffer: []string \\
-		File: *FileNode \\
-	}{}
-	\umlclass[class, x=8cm, y=-8cm]{FileNode}{
-		URI: string \\
-		Path: string \\
-		IsDir: bool \\
-		Info: os.FileInfo \\
-		Data: any \\
-	}{
-		HTMLPath(): template.HTML \\
-		EvalSymlinks(): string \\
-		IconPath(): string \\
-		Size(): string \\
-		Mode(): string \\
-		ModDate(): string \\
-		ModTime(): string \\
-		Details(): string \\
-	}
-	\umluniaggreg[geometry=-|]{FSData}{FileNode}
-\end{tikzpicture}
-\end{center}
-\vfill
-
-
 \section{ER Diagram}
 \vfill
 \begin{center}
@@ -439,6 +403,42 @@ The Web Interface can be accessed through any computer or mobile device. The use
 	\umluniassoc[mult=1]{FileSystem}{Directory}
 	\umluniassoc[mult=0..*]{Directory}{Directory}
 	\umluniassoc[mult=0..*]{Directory}{File}
+\end{tikzpicture}
+\end{center}
+\vfill
+
+
+\section{Class Diagram}
+\vfill
+\begin{center}
+\begin{tikzpicture}[
+		class/.style={minimum width=6cm},
+	]
+	\umlclass[class]{FSData}{
+		CutCount: int \\
+		CopyCount: int \\
+		FileCount: int \\
+		CutBuffer: []string \\
+		CopyBuffer: []string \\
+		File: *FileNode \\
+	}{}
+	\umlclass[class, x=8cm, y=-8cm]{FileNode}{
+		URI: string \\
+		Path: string \\
+		IsDir: bool \\
+		Info: os.FileInfo \\
+		Data: any \\
+	}{
+		HTMLPath(): template.HTML \\
+		EvalSymlinks(): string \\
+		IconPath(): string \\
+		Size(): string \\
+		Mode(): string \\
+		ModDate(): string \\
+		ModTime(): string \\
+		Details(): string \\
+	}
+	\umluniaggreg[geometry=-|]{FSData}{FileNode}
 \end{tikzpicture}
 \end{center}
 \vfill
@@ -733,44 +733,67 @@ Representation of File Metadata in File System. \\
 \fi  % System Implementation
 
 
+\fontsize{12pt}{24pt}\selectfont
+
 \iftrue  % Miscellaneous
 
 \section{Results}
 
 Connecting to Pi and loading the page asks for credentials. \\ \\
-\includegraphics[width=\linewidth]{ss/1.cm-login.png} \\ \\
+\includegraphics[width=\linewidth]{ss/1.cm-login.png} \\
 
 The home page will be loaded when the right credentials are entered. \\ \\
-\includegraphics[width=\linewidth]{ss/2.cm-home.png} \\ \\
+\includegraphics[width=\linewidth]{ss/2.cm-home.png} \\
 
-\clearpage
 Clicking on the upload button opens a dialog which the user can use to select and upload multiple files. \\ \\
-\includegraphics[width=\linewidth]{ss/3.cm-upload.png} \\ \\
+\includegraphics[width=\linewidth]{ss/3.cm-upload.png} \\
 
 Clicking on the new folder button in lower right corner opens up a prompt that inputs a name and create a new folder. \\ \\
-\includegraphics[width=\linewidth]{ss/4.cm-create-folder.png} \\ \\
+\includegraphics[width=\linewidth]{ss/4.cm-create-folder.png} \\
 
 \clearpage
 The user can also select multiple files and perform various file operations on selected files. \\ \\
-\includegraphics[width=\linewidth]{ss/5.cm-select.png} \\ \\
+\includegraphics[width=\linewidth]{ss/5.cm-select.png} \\
 
 Here's an example of user cutting a bunch of files. \\ \\
-\includegraphics[width=\linewidth]{ss/6.cm-cut.png} \\ \\
+\includegraphics[width=\linewidth]{ss/6.cm-cut.png} \\
 
 \clearpage
 Same with copying files. \\ \\
-\includegraphics[width=\linewidth]{ss/7.cm-cut-copy.png} \\ \\
+\includegraphics[width=\linewidth]{ss/7.cm-cut-copy.png} \\
 
 The clear button will cancel any cut/copy operations where as the paste button will paste all the files from cut/copy buffer in the directory the user is currently in. Similary the user can also downlad files using file selection. \\ \\
 
 When deleting files, the user is prompted with a confirmation dialog box with count of files that are goint to be deleted. \\ \\
-\includegraphics[width=\linewidth]{ss/8.cm-delete-prompt.png} \\ \\
+\includegraphics[width=\linewidth]{ss/8.cm-delete-prompt.png}
 
 
-\section{Conclusion}
+\section{Future Scope and Conclusion}
+\vspace{2cm}
+\quad\quad
+The \inserttitle{} system proves to be a very useful tool for digital professionals and even normal users. However, this was really a minimal working demonstration of can be done with a cheap computer (like Rasberry Pi) and bunch of media devices. A lot more can be done to extend the current systems as well as make it do things that it was not intended to. \\
+\par
+It's authentication system can be improved to include permanent logins and session managements using browser cookies. At the movement, it only supports HTTP BasicAuth and user has to login everytime they open a new browser instance. \\
+\par
+This system can include automatic backup and sync functionality with native applications interfacing the web server. This would be the key feature for driving mass adoption by users as one of the primary view of cloud storage is of a 'backup point.' Users will also don't have to bother with manuall uploading or downloading files as they can be automatically synced in the background. \\
+\par
+A public sharing functionality can be introduced where a user selects a folder or a bunch of files and a link is automatically generated that allows other people or non-users of the system to access those files. This will also replace the reliance on third party file sharing sites like Zapya or ToffeeShare.
 
 
 \section{References}
+\vspace{2cm}
+\begin{enumerate}
+	\item Go Language Specificatoin: \quad https://go.dev/ref/spec
+	\item Go Package Documentation: \quad https://pkg.go.dev/std
+	\item Go User Guides: \quad https://go.dev/doc/
+	\item Basic Auth: \quad https://www.alexedwards.net/blog/basic-authentication-in-go
+	\item Stack Overflow: \quad https://stackoverflow.com
+	\item Google Drive Pricing: \quad https://one.google.com/about/plans
+	\item Nginx: \quad https://nginx.org/en/
+	\item OpenSSH: \quad https://www.openssh.com/
+	\item ArchLinux Wiki: \quad https://wiki.archlinux.org/
+	\item MDN Docs: \quad https://developer.mozilla.org/en-US/
+\end{enumerate}
 
 
 \fi  % Miscellaneous
