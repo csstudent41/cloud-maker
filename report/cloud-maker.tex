@@ -6,11 +6,14 @@
 \usepackage{calc}
 \usepackage{eso-pic}
 \usepackage{titlesec}
+\usepackage{soulutf8}
 \usepackage{array}
 \usepackage{makecell}
 \usepackage{graphicx}
 \usepackage{tikz-uml}
 \usepackage{pgfgantt}
+\usepackage{listings}
+\usepackage{color}
 
 \date{06 Oct, 2024}
 \title{Cloud Maker}
@@ -55,12 +58,11 @@
 
 \titleformat{\subsubsection}
 {\bfseries\uppercase}
-{\hspace{-0.5cm}}
-{1em}
 {}
+{1em}
+{\ul}
 
 \AddToHook{cmd/section/before}{\clearpage}
-% \tikzumlset{fill usecase=white}
 \graphicspath{ {./images/} }
 
 \newenvironment{changemargin}[2]{%
@@ -78,6 +80,28 @@
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Go,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
 
 
 \begin{document}
@@ -197,9 +221,12 @@ submitted in the partial fulfillment for the award of Bachelor of Science in Com
 \vfill
 
 
+\iftrue  % Theory
+
+
 \section{Introduction}
 \vspace{1cm}
-\textbf{\ul\uppercase{Title of the Project:}} \quad\textbf{\MakeUppercase{\inserttitle}}
+\textbf{\uppercase{Title of the Project:}} \quad\textbf{\MakeUppercase{\inserttitle}}
 \bigskip
 \subsubsection{Synopsis:} \quad\quad
 \textit{A cloud storage in distributed fashion.} \\ \par
@@ -210,7 +237,7 @@ In summary, it turns the user's own storage devices into a cloud making it convi
 
 
 \section{Limitations of Current System}
-\vspace{2cm} \\
+\vspace{2cm}
 \quad\quad Thc cloud storage space have now become mainstream. People used store their files and data backups on External Storage Devices like Pend Drives and Hard Drives. However, these days we just upload all our content to cloud storage like Google Drive. This poses many problems and risks surrounding around Data Privacy, Security and Ownership of Data. It's now a well known fact that companies sell the User Data they harvest to other companies in exchange of profits. \\
 
 There's also a problem with the costs involved. Cloud Storage Drives are extremely Expensive. Just for instance Google Cloud charges you Rs. 130 per month in India for a 100GB storage space for a single user. Assuming a year is just 10 months, it becomes Rs. 1300 for an year an Rs. 13,000 for a decade. That's actually quiet expensive for just a 100GB of storage space. A lot of people aren't really interested in spending a lot of money on such storage options as they often simply can't afford it. They will usually try to limit themselves by just using the limited storage space that is provided per account for free. 15 GigaBytes in case of Google Drive.
@@ -266,8 +293,10 @@ The Web Interface can be accessed through any computer or mobile device. The use
 		\end{itemize}
 \end{enumerate}
 
+\fi  % Theory
 
-\iftrue
+
+\iftrue  % UML Diagrams
 \fontsize{12pt}{16pt}\selectfont
 
 \section{Event Table}
@@ -406,6 +435,7 @@ The Web Interface can be accessed through any computer or mobile device. The use
 
 
 \section{Use Case Diagram}
+% \tikzumlset{fill usecase=white}
 \vfill
 \begin{center}
 \begin{tikzpicture}[
@@ -649,10 +679,39 @@ Representation of File Metadata in File System. \\
 % \end{center}
 % \vfill
 
-\fi
+\fi  % UML Diagrams
+
+
+\iftrue  % System Implementation
 
 
 \section{System Implementation}
+
+\lstset{language=Go}
+\lstset{basicstyle=\ttffamily}
+
+\subsubsection{server.go}
+\lstinputlisting{../src/server.go}%
+
+\subsubsection{helpers.go}
+\lstinputlisting{../src/helpers.go}
+
+\subsubsection{files.go}
+\lstinputlisting{../src/files.go}
+
+\subsubsection{templates.go}
+\lstinputlisting{../src/templates.go}
+
+\lstset{language=Bash}
+
+\subsubsection{automountd}
+\lstinputlisting{../scripts/automountd}
+
+\subsubsection{automount-clear}
+\lstinputlisting{../scripts/automount-clear}
+
+
+\fi  % System Implementation
 
 
 \section{Results}

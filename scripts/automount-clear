@@ -1,0 +1,5 @@
+#!/bin/sh
+
+find /mnt -mindepth 1 -maxdepth 1 -printf "%P\n" | while read -r path; do
+ lsblk | grep -F "$path"
+done

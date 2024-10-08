@@ -1,0 +1,19 @@
+#!/bin/sh
+
+pathtoname() {
+	udevadm info -p /sys/"$1" | awk -v FS== '/DEVNAME/ {print $2}'
+}
+
+stdbuf -oL -- udevadm monitor --udev -s block | while read -r -- _ _ event devpath _; do
+	if [ "$event" = add ]; then
+		devname=$(pathtoname "$devpath")
+		# udisksctl mount --block-device "$devname" --no-user-interaction
+		
+		target="$(lsblk -no LABEL "$devname")"
+		[ -z "$target" ] && target="$(lsblk -no UUID "$devname")"
+		[ -z "$target" ] && continue
+		sudo mount -v --mkdir "$devname" "/media/root/$target"
+		mkdir -pv "/media/master/$target"
+		sudo bindfs -u $(id -u) -g $(id -g) "/media/root/$target" "/media/master/$target"
+	fi
+done
