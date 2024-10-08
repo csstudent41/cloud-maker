@@ -209,14 +209,15 @@ func createNewDirectory(w http.ResponseWriter, r *http.Request) *ServerError {
 
 var (
 	homeDir = "/media/"
-	dataDir = "/tmp/cloud/"
-	cutBuffer = filepath.Join(dataDir, "cut_buffer")
-	copyBuffer = filepath.Join(dataDir, "copy_buffer")
+	tempDir = "/tmp/cloud/"
+	dataDir = "data"
+	cutBuffer = filepath.Join(tempDir, "cut_buffer")
+	copyBuffer = filepath.Join(tempDir, "copy_buffer")
 )
 
 
 func init() {
-	err := os.MkdirAll(dataDir, 0755)
+	err := os.MkdirAll(tempDir, 0755)
 	if err != nil {
 		panic(err)
 	}

@@ -53,6 +53,12 @@
 {}
 [\hrule]
 
+\titleformat{\subsubsection}
+{\bfseries\uppercase}
+{\hspace{-0.5cm}}
+{1em}
+{}
+
 \AddToHook{cmd/section/before}{\clearpage}
 % \tikzumlset{fill usecase=white}
 \graphicspath{ {./images/} }
@@ -162,7 +168,7 @@ submitted in the partial fulfillment for the award of Bachelor of Science in Com
 	\hline\textbf{1.}  & \textbf{Introduction} & \textbf{} & \\
 	\hline\textbf{2.}  & \textbf{Limitation of Current System} & \textbf{} & \\
 	\hline\textbf{3.}  & \textbf{Advantages of Proposed System} & \textbf{} & \\
-	\hline\textbf{4.}  & \textbf{Feasibility Study} & \textbf{} & \\
+	\hline\textbf{4.}  & \textbf{Tools and Techniques} & \textbf{} & \\
 	\hline\textbf{5.}  & \textbf{Requirement Specification} & \textbf{} & \\
 	\hline\textbf{6.}  &
 	\bgroup
@@ -192,15 +198,43 @@ submitted in the partial fulfillment for the award of Bachelor of Science in Com
 
 
 \section{Introduction}
+\vspace{1cm}
+\textbf{\ul\uppercase{Title of the Project:}} \quad\textbf{\MakeUppercase{\inserttitle}}
+\bigskip
+\subsubsection{Synopsis:} \quad\quad
+\textit{A cloud storage in distributed fashion.} \\ \par
+This system is intended to be an alternative to online storage proveders like Google Drive. It's a distributed model where the user physically owns the resources in his/her own house. Unlike centralised cloud providers, the user is given a small computing device, preferrably an SBC like Rasberry Pi which acts as an 'Endpoint Device' and a gateway to access user's various media devices like Pen Drives, Hard Drives, Memory Cards, and any other sotrage media that can potentially interface with the Endpoint Device (Rasberry Pi, in our case.) \\ \par
+The user is intended to connect his Endpoint device using a Web Proxy which will be automatically setup acting as a Internet Gateway to his Endpoint Device. The Rasberry Pi will be primary product for the user that will act as a Cloud Storage Provider. He can access this Cloud Storage from any computer that has an Internet Connection. The user will be provided with a Web Interface from where he can view and manage all his Files and Folders. \\
+\par
+In summary, it turns the user's own storage devices into a cloud making it convinient for the user to access his storage from anywhere in the world.
 
 
 \section{Limitations of Current System}
+\vspace{2cm} \\
+\quad\quad Thc cloud storage space have now become mainstream. People used store their files and data backups on External Storage Devices like Pend Drives and Hard Drives. However, these days we just upload all our content to cloud storage like Google Drive. This poses many problems and risks surrounding around Data Privacy, Security and Ownership of Data. It's now a well known fact that companies sell the User Data they harvest to other companies in exchange of profits. \\
+
+There's also a problem with the costs involved. Cloud Storage Drives are extremely Expensive. Just for instance Google Cloud charges you Rs. 130 per month in India for a 100GB storage space for a single user. Assuming a year is just 10 months, it becomes Rs. 1300 for an year an Rs. 13,000 for a decade. That's actually quiet expensive for just a 100GB of storage space. A lot of people aren't really interested in spending a lot of money on such storage options as they often simply can't afford it. They will usually try to limit themselves by just using the limited storage space that is provided per account for free. 15 GigaBytes in case of Google Drive.
 
 
-\section{Advantages of Pruposed System}
+\section{Advantages of Proposed System}
+\vspace{2cm}
+\quad\quad This system tries to solve many of the problems with Cloud Storage proveders, as mentioned in the previous section that revolve araound data privacy and security and also costs. \\
+\par
+\inserttitle{} ensures that the data stays on user's physical medium ensuring that the user absolutely owns the data and no one else on the internet has access to it. Unless ofcourse, they had physical access to the device itself. This is incredibly useful for storing highly sensitive documents and other details that can be detremental for the user if fallen onto wrong hands. Being distributed in nature, it also minimizes the damage of data breaches. If a hacker do succeed in any case breaching the cloud storage, they only breache one device rather than breaching the whole community. This can be quite important for Government officials storing classified documents on the storage devices \\
+\par
+\inserttitle{} also makes it feasible for users to have large cloud storage space. As the user can simply use his/her own storage devices as a cloud store. The user can buy 1 TeraByte hard drive which will usually costs around Rs. 3,000 to 5,000 and can easily last for 6+ years and even a decade. This makes the costs and scale feasible for the user. This is especially useful for professionals like Video Editors and Graphics designers that often have Adboe project files spanning over multiple GigaBytes. They can't carry their hard drive everywhere and they often have to access various of their previous workd sporadically even for new projects.
 
 
-\section{Feasability Study}
+\section{Tools and Techniques}
+\vspace{2cm}
+\quad\quad
+This system involves an Endpoint Server and a client computer. For the endpoint server, let's assume a Rasberry Pi Model 3B flashed with a Linux Operating System like Debian 10 for ARM. This devices primarily runs two things, a web server and a set of scripts for managing storage devices. It then forwards it's Web Server Port to a VPS server using SSH. This VPS server has a pre-registered domain name and acts as a proxy to the Rasberry Pi Endpoint making it accessible throught the internet. \\
+\par
+Initially, two shell scripts are started in the bacground -- automountd and automount-clear. automountd monitors all the usb ports of Rasberry Pi and automatically mounts any storage device as soon as it's connected to it. It mounts them at a specific mount point (/media/user) which is later used by the Web Server. automount-clear monitors the mount point and cleans any dangling directories left over of unmount storage devices. \\
+\par
+The Web Server makes the mount point accessible to other computers by providing a web interface for browsing and managing files. The Web Interface is essentially a File Manager. The Web Server is written in Go Programming Languages and uses http router from standard library which provides routing functionality and html/template (Go's built in template engine) which provides the building blocks of the web interface.\\
+\par
+The Web Interface can be accessed through any computer or mobile device. The user can freely upload, download, or share files from his media device.
 
 
 \section{Requirement Specification}
@@ -232,6 +266,8 @@ submitted in the partial fulfillment for the award of Bachelor of Science in Com
 		\end{itemize}
 \end{enumerate}
 
+
+\iftrue
 \fontsize{12pt}{16pt}\selectfont
 
 \section{Event Table}
@@ -403,7 +439,7 @@ submitted in the partial fulfillment for the award of Bachelor of Science in Com
 
 \section{Sequence Diagram}
 \vfill
-Stage 1: Connect to Cloud Storage \\
+% Stage 1: Connect to Cloud Storage \\
 \begin{center}
 \begin{tikzpicture}
 \begin{umlseqdiag}
@@ -420,10 +456,8 @@ Stage 1: Connect to Cloud Storage \\
 \end{center}
 \vfill
 
-\clearpage
 \vfill
-Stage 2: Open Files and perform Actions \\
-\vspace{2cm}
+% Stage 2: Open Files and perform Actions \\
 \begin{center}
 \begin{tikzpicture}
 \begin{umlseqdiag}
@@ -528,8 +562,8 @@ Stage 2: Open Files and perform Actions \\
 	]
 	\node[start] at (0, 0) (start) {};
 	\node[fixlabel] at (0, -2) (browse) {Browse Files};
-	\node[fixlabel] at (-6, -3) (ofolder) {Open Folder};
-	\node[fixlabel] at (6, -3) (ofile) {Open File};
+	\node[fixlabel] at (-6, -2) (ofolder) {Open Folder};
+	\node[fixlabel] at (6, -2) (ofile) {Open File};
 	\node[label, text width=3cm] at (-2, -4.5) (select) {Select Files and Folders};
 	\node[fixlabel] at (3, -5) (action) {Perform Action};
 	\node[label] at (6, -7) (download) {Download};
@@ -614,6 +648,8 @@ Representation of File Metadata in File System. \\
 % \end{ganttchart}
 % \end{center}
 % \vfill
+
+\fi
 
 
 \section{System Implementation}

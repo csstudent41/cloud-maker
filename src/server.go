@@ -2,7 +2,6 @@ package main
 
 import (
 	"archive/zip"
-	"crypto/sha256"
 	"crypto/subtle"
 	"fmt"
 	"io"
@@ -185,12 +184,16 @@ func (fn httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	usernameHash := sha256.Sum256([]byte(username))
-	passwordHash := sha256.Sum256([]byte(password))
-	expectedUsernameHash := sha256.Sum256([]byte("user"))
-	expectedPasswordHash := sha256.Sum256([]byte("123"))
-	usernameMatch := (subtle.ConstantTimeCompare(usernameHash[:], expectedUsernameHash[:]) == 1)
-	passwordMatch := (subtle.ConstantTimeCompare(passwordHash[:], expectedPasswordHash[:]) == 1)
+	realUsername, err := readData("username")
+	if err != nil {
+		http.Error(w, "Couldn't retreive username data from server.", 500)
+	}
+	realPassword, err := readData("password")
+	if err != nil {
+		http.Error(w, "Couldn't retreive password data from server.", 500)
+	}
+	usernameMatch := (subtle.ConstantTimeCompare([]byte(username[:]), realUsername[:]) == 1)
+	passwordMatch := (subtle.ConstantTimeCompare([]byte(password[:]), realPassword[:]) == 1)
 
 	if !usernameMatch || !passwordMatch {
 		w.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)

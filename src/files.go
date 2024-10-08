@@ -429,3 +429,25 @@ func linkDeref(link string) (string, string, error) {
 	}
 	return target, path, nil
 }
+
+
+func readData(name string) ([]byte, error) {
+	data, err := os.ReadFile(filepath.Join(dataDir, name))
+	if err != nil {
+		return nil, err
+	}
+	return data[:len(data)-1], nil
+}
+
+
+func writeData(name string, data string) error {
+	return os.WriteFile(filepath.Join(dataDir, name), []byte(data), 644)
+}
+
+
+func init() {
+	err := os.MkdirAll(dataDir, 0755)
+	if err != nil {
+		panic(err)
+	}
+}
