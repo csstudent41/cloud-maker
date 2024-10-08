@@ -106,6 +106,10 @@
 
 \begin{document}
 
+
+\iftrue  % Theory
+
+
 \begin{center}
 	\fontsize{14pt}{28pt}\selectfont
 	A PROJECT REPORT \\
@@ -219,9 +223,6 @@ submitted in the partial fulfillment for the award of Bachelor of Science in Com
 \end{tabular}
 \end{center}
 \vfill
-
-
-\iftrue  % Theory
 
 
 \section{Introduction}
@@ -407,31 +408,40 @@ The Web Interface can be accessed through any computer or mobile device. The use
 \vfill
 
 
-% \section{ER Diagram}
-% \vfill
-% \begin{center}
-% \begin{tikzpicture}[
-% 		class/.style={minimum width=4cm},
-% 	]
-% 	\umlclass[class]{FSData}{
-% 		CutCount \\
-% 		CopyCount \\
-% 		FileCount \\
-% 		CutBuffer \\
-% 		CopyBuffer \\
-% 		File \\
-% 	}{}
-% 	\umlclass[class, x=8cm, y=-8cm]{FileNode}{
-% 		URI \\
-% 		Path \\
-% 		IsDir \\
-% 		Info \\
-% 		Data \\
-% 	}{}
-% 	\umlassoc[geometry=-|]{FSData}{FileNode}
-% \end{tikzpicture}
-% \end{center}
-% \vfill
+\section{ER Diagram}
+\vfill
+\begin{center}
+\begin{tikzpicture}[
+		class/.style={minimum width=4cm},
+	]
+	\umlclass[class, rectangle split parts=2]{FileSystem}{
+		CutCount \\
+		CopyCount \\
+		FileCount \\
+		CutBuffer \\
+		CopyBuffer \\
+		File \\
+	}{}
+	\umlclass[class, x=8cm, y=0cm,
+			rectangle split parts=2]{Directory}{
+		URI \\
+		Path \\
+		Info \\
+		Files \\
+	}{}
+	\umlclass[class, x=8cm, y=-8cm,
+			rectangle split parts=2]{File}{
+		URI \\
+		Path \\
+		Info \\
+		Data \\
+	}{}
+	\umluniassoc[mult=1]{FileSystem}{Directory}
+	\umluniassoc[mult=0..*]{Directory}{Directory}
+	\umluniassoc[mult=0..*]{Directory}{File}
+\end{tikzpicture}
+\end{center}
+\vfill
 
 
 \section{Use Case Diagram}
@@ -537,14 +547,21 @@ The Web Interface can be accessed through any computer or mobile device. The use
 		comp/.style={minimum width=3cm}
 	]
 	\umlbasiccomponent[comp, x=0, y=-0]{Client}
-	\umlbasiccomponent[comp, x=6, y=-0]{Nginx Proxy}
-	\umlbasiccomponent[comp, x=3, y=-3]{SSH Server}
-	\umlbasiccomponent[comp, x=3, y=-5]{SSH Client}
-	\umlbasiccomponent[comp, x=0, y=-8]{Linux OS}
-	\umlbasiccomponent[comp, x=10, y=-6]{USB Monitor}
-	\umlbasiccomponent[comp, x=10, y=-9]{Web Server}
-	\umlbasiccomponent[comp, x=0, y=-14]{Storage Devices}
-	\umlbasiccomponent[comp, x=8, y=-14]{File System}
+	\umlbasiccomponent[comp, x=10, y=-0]{Nginx Proxy}
+	\umlbasiccomponent[comp, x=5, y=-3]{SSH Server}
+	\umlbasiccomponent[comp, x=0, y=-6]{SSH Client}
+	\umlbasiccomponent[comp, x=10, y=-6]{Web Server}
+	\umlbasiccomponent[comp, x=5, y=-9]{Linux OS}
+	\umlbasiccomponent[comp, x=10, y=-12]{USB Monitor}
+	% \umlbasiccomponent[comp, x=0, y=-14]{File System}
+	\umlbasiccomponent[comp, x=0, y=-12]{Storage Devices}
+	\umlassemblyconnector[interface=HTTP Connection]{Client}{Nginx Proxy}
+	\umlVHassemblyconnector[interface=Forwarded Port]{Nginx Proxy}{SSH Server}
+	\umlVHassemblyconnector[interface=SSH Connection]{SSH Client}{SSH Server}
+	\umlassemblyconnector[interface=Web Server Port]{SSH Client}{Web Server}
+	\umlHVassemblyconnector[interface=File System]{Linux OS}{Storage Devices}
+	\umlHVassemblyconnector[interface=USB Ports]{USB Monitor}{Linux OS}
+	\umlVHassemblyconnector[interface=File System]{Web Server}{Linux OS}
 \end{tikzpicture}
 \end{center}
 \vfill
@@ -558,9 +575,9 @@ The Web Interface can be accessed through any computer or mobile device. The use
 		\umlbasiccomponent[]{Web Browser}
 	\end{umlcomponent}
 	\begin{umlcomponent}{Central Proxy Server}
-		\umlbasiccomponent[x=6]{SSH Server}
-		\umlbasiccomponent[x=10]{Nginx}
-		\umlbasiccomponent[x=8, y=-2]{Linux OS}
+		\umlbasiccomponent[x=8]{SSH Server}
+		\umlbasiccomponent[x=12]{Nginx}
+		\umlbasiccomponent[x=10, y=-2]{Linux OS}
 	\end{umlcomponent}
 	\begin{umlcomponent}{Endpoint Server}
 		\umlbasiccomponent[x=2, y=-8]{Web Server}
@@ -575,6 +592,9 @@ The Web Interface can be accessed through any computer or mobile device. The use
 		\umlbasiccomponent[x=8, y=-16]{SD Card}
 		\umlbasiccomponent[x=12, y=-16]{External SSD}
 	\end{umlcomponent}
+	\umluniassoc{Client Device}{Central Proxy Server}
+	\umluniassoc{Endpoint Server}{Central Proxy Server}
+	\umluniassoc{Endpoint Server}{External Storage}
 \end{tikzpicture}
 \end{center}
 \vfill
@@ -594,8 +614,8 @@ The Web Interface can be accessed through any computer or mobile device. The use
 	\node[fixlabel] at (0, -2) (browse) {Browse Files};
 	\node[fixlabel] at (-6, -2) (ofolder) {Open Folder};
 	\node[fixlabel] at (6, -2) (ofile) {Open File};
-	\node[label, text width=3cm] at (-2, -4.5) (select) {Select Files and Folders};
-	\node[fixlabel] at (3, -5) (action) {Perform Action};
+	\node[label, text width=3cm] at (-2, -4) (select) {Select Files and Folders};
+	\node[fixlabel] at (3, -4) (action) {Perform Action};
 	\node[label] at (6, -7) (download) {Download};
 	\node[fixlabel] at (2, -8) (manage) {Manage Files};
 	\node[fixlabel] at (-1, -10) (cut) {Cut to Buffer};
@@ -611,7 +631,6 @@ The Web Interface can be accessed through any computer or mobile device. The use
 	\draw[arrow] (select) -- (action);
 	\draw[arrow] (action) -- (manage);
 	\draw[arrow] (action) -- (download);
-	\draw[arrow] (download) -- (ofile);
 	\draw[arrow] (manage) -- (cut);
 	\draw[arrow] (manage) -- (copy);
 	\draw[arrow] (manage) -- (delete);
@@ -714,6 +733,8 @@ Representation of File Metadata in File System. \\
 \fi  % System Implementation
 
 
+\iftrue  % Miscellaneous
+
 \section{Results}
 
 
@@ -721,6 +742,9 @@ Representation of File Metadata in File System. \\
 
 
 \section{References}
+
+
+\fi  % Miscellaneous
 
 
 \end{document}
