@@ -186,11 +186,11 @@ func (fn httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	realUsername, err := readData("username")
 	if err != nil {
-		http.Error(w, "Couldn't retreive username data from server.", 500)
+		http.Error(w, "Couldn't retreive username from server.", 500)
 	}
 	realPassword, err := readData("password")
 	if err != nil {
-		http.Error(w, "Couldn't retreive password data from server.", 500)
+		http.Error(w, "Couldn't retreive password from server.", 500)
 	}
 	usernameMatch := (subtle.ConstantTimeCompare([]byte(username[:]), realUsername[:]) == 1)
 	passwordMatch := (subtle.ConstantTimeCompare([]byte(password[:]), realPassword[:]) == 1)

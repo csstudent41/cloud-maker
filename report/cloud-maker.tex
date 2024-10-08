@@ -258,7 +258,7 @@ There's also a problem with the costs involved. Cloud Storage Drives are extreme
 \quad\quad
 This system involves an Endpoint Server and a client computer. For the endpoint server, let's assume a Rasberry Pi Model 3B flashed with a Linux Operating System like Debian 10 for ARM. This devices primarily runs two things, a web server and a set of scripts for managing storage devices. It then forwards it's Web Server Port to a VPS server using SSH. This VPS server has a pre-registered domain name and acts as a proxy to the Rasberry Pi Endpoint making it accessible throught the internet. \\
 \par
-Initially, two shell scripts are started in the bacground -- automountd and automount-clear. automountd monitors all the usb ports of Rasberry Pi and automatically mounts any storage device as soon as it's connected to it. It mounts them at a specific mount point (/media/user) which is later used by the Web Server. automount-clear monitors the mount point and cleans any dangling directories left over of unmount storage devices. \\
+Initially, two shell scripts are started in the bacground -- automountd and automount-clean. automountd monitors all the usb ports of Rasberry Pi and automatically mounts any storage device as soon as it's connected to it. It mounts them at a specific mount point (/media/user) which is later used by the Web Server. automount-clean monitors the mount point and cleans any dangling directories left over of unmount storage devices. \\
 \par
 The Web Server makes the mount point accessible to other computers by providing a web interface for browsing and managing files. The Web Interface is essentially a File Manager. The Web Server is written in Go Programming Languages and uses http router from standard library which provides routing functionality and html/template (Go's built in template engine) which provides the building blocks of the web interface.\\
 \par
@@ -726,8 +726,8 @@ Representation of File Metadata in File System. \\
 \subsubsection{automountd}
 \lstinputlisting{../scripts/automountd}
 
-\subsubsection{automount-clear}
-\lstinputlisting{../scripts/automount-clear}
+\subsubsection{automount-clean}
+\lstinputlisting{../scripts/automount-clean}
 
 
 \fi  % System Implementation
@@ -736,6 +736,35 @@ Representation of File Metadata in File System. \\
 \iftrue  % Miscellaneous
 
 \section{Results}
+
+Connecting to Pi and loading the page asks for credentials. \\ \\
+\includegraphics[width=\linewidth]{ss/1.cm-login.png} \\ \\
+
+The home page will be loaded when the right credentials are entered. \\ \\
+\includegraphics[width=\linewidth]{ss/2.cm-home.png} \\ \\
+
+\clearpage
+Clicking on the upload button opens a dialog which the user can use to select and upload multiple files. \\ \\
+\includegraphics[width=\linewidth]{ss/3.cm-upload.png} \\ \\
+
+Clicking on the new folder button in lower right corner opens up a prompt that inputs a name and create a new folder. \\ \\
+\includegraphics[width=\linewidth]{ss/4.cm-create-folder.png} \\ \\
+
+\clearpage
+The user can also select multiple files and perform various file operations on selected files. \\ \\
+\includegraphics[width=\linewidth]{ss/5.cm-select.png} \\ \\
+
+Here's an example of user cutting a bunch of files. \\ \\
+\includegraphics[width=\linewidth]{ss/6.cm-cut.png} \\ \\
+
+\clearpage
+Same with copying files. \\ \\
+\includegraphics[width=\linewidth]{ss/7.cm-cut-copy.png} \\ \\
+
+The clear button will cancel any cut/copy operations where as the paste button will paste all the files from cut/copy buffer in the directory the user is currently in. Similary the user can also downlad files using file selection. \\ \\
+
+When deleting files, the user is prompted with a confirmation dialog box with count of files that are goint to be deleted. \\ \\
+\includegraphics[width=\linewidth]{ss/8.cm-delete-prompt.png} \\ \\
 
 
 \section{Conclusion}

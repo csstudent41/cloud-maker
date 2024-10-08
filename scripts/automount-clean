@@ -1,0 +1,9 @@
+#!/bin/sh
+
+while sleep 10; do
+	find "/media/$USER" -mindepth 1 -maxdepth 1 -printf "%P\n" | while read -r mount; do
+		[ -n "$(lsblk | grep -F "$mount")" ] && continue
+		sudo fusermount -u "/media/$USER/$mount"
+		rmdir -v "/media/$USER/$mount"
+	done
+done
