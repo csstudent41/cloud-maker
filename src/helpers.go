@@ -210,25 +210,24 @@ func createNewDirectory(w http.ResponseWriter, r *http.Request) *ServerError {
 var (
 	homeDir = "/media/"
 	tempDir = "/tmp/cloud/"
-	dataDir = "data"
 	cutBuffer = filepath.Join(tempDir, "cut_buffer")
 	copyBuffer = filepath.Join(tempDir, "copy_buffer")
 )
 
 
 func init() {
-	err := os.MkdirAll(tempDir, 0755)
+	err := os.MkdirAll(tempDir, 0755);
 	if err != nil {
 		panic(err)
 	}
-	home := os.Getenv("CLOUD_MAKER_HOME")
-	if home != "" {
-		isExist, err := fileExists(home)
+	mountpoint := os.Getenv("CLOUD_MAKER_HOME")
+	if mountpoint != "" {
+		isExist, err := fileExists(mountpoint)
 		if err != nil {
 			panic(err)
 		}
 		if isExist {
-			homeDir = home
+			homeDir = mountpoint
 		}
 		return
 	}

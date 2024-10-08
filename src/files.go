@@ -431,8 +431,10 @@ func linkDeref(link string) (string, string, error) {
 }
 
 
+var configDir string
+
 func readData(name string) ([]byte, error) {
-	data, err := os.ReadFile(filepath.Join(dataDir, name))
+	data, err := os.ReadFile(filepath.Join(configDir, name))
 	if err != nil {
 		return nil, err
 	}
@@ -441,13 +443,16 @@ func readData(name string) ([]byte, error) {
 
 
 func writeData(name string, data string) error {
-	return os.WriteFile(filepath.Join(dataDir, name), []byte(data), 644)
+	return os.WriteFile(filepath.Join(configDir, name), []byte(data), 644)
 }
 
-
 func init() {
-	err := os.MkdirAll(dataDir, 0755)
+	userHome, err := os.UserHomeDir()
 	if err != nil {
+		panic(err)
+	}
+	configDir = filepath.Join(userHome, ".config", "cloud-maker")
+	if err = os.MkdirAll(configDir, 0755); err != nil {
 		panic(err)
 	}
 }
