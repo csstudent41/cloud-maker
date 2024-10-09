@@ -393,16 +393,6 @@ func copyTo(src, dstDir string) error {
 	}
 	fmt.Println("Finished Copying.\n\n")
 
-	/*
-		stat, ok := info.Sys().(*syscall.Stat_t)
-		if !ok {
-			return fmt.Errorf("failed to get raw syscall.Stat_t data for '%s'", src)
-		}
-		if err := os.Lchown(dst, int(stat.Uid), int(stat.Gid)); err != nil {
-			return err
-		}
-	*/
-
 	if info.Mode()&os.ModeSymlink == 0 {
 		return os.Chmod(dst, info.Mode())
 	}

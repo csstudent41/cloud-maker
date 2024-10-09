@@ -9,6 +9,7 @@
 \usepackage{soulutf8}
 \usepackage{array}
 \usepackage{makecell}
+\usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{tikz-uml}
 \usepackage{pgfgantt}
@@ -95,13 +96,16 @@
   basicstyle={\small\ttfamily},
   numbers=none,
   numberstyle=\tiny\color{gray},
-  keywordstyle=\color{blue},
-  commentstyle=\color{dkgreen},
-  stringstyle=\color{mauve},
+  keywordstyle=\bfseries\color{blue},
+  commentstyle=\itshape\color{dkgreen},
+	identifierstyle=\color{mauve},
+  stringstyle=\color{red},
   breaklines=true,
   breakatwhitespace=true,
   tabsize=3
 }
+
+\hypersetup{colorlinks=true, urlcolor=blue}
 
 
 \begin{document}
@@ -145,14 +149,14 @@
 \begin{center}
 	\vspace{2cm}
 	I would like to acknowledge my sincere thanks towards our project guide \\
-	\textbf{Head of Computer Scince Department} \\
-	\textbf{Mrs. Srimathi Narayanan} \\
+	\textbf{Mrs. Swetha Iyer} \\
 	for their valuable guidance and suggestions and \\
 	providing me an opportunity to do the project work in the college lab and \\
 	which made me complete the project successfully. \\
 	\vspace{2cm}
 	I am also thankful to \\
-	\textbf{Mrs. Gyaneshwari Pawar} \\
+	\textbf{Head of Computer Scince Department} \\
+	\textbf{Mrs. Srimathi Narayanan} \\
 	For providing such nice guidance in form of comments and corrections. \\
 	I am thakful to and fortunate enough to get contant encouragement, \\
 	support and guidance from all teaching staff of Computer Science \\
@@ -445,7 +449,6 @@ The Web Interface can be accessed through any computer or mobile device. The use
 
 
 \section{Use Case Diagram}
-% \tikzumlset{fill usecase=white}
 \vfill
 \begin{center}
 \begin{tikzpicture}[
@@ -607,33 +610,48 @@ The Web Interface can be accessed through any computer or mobile device. The use
 		node distance=2cm,
 		arrow/.style={thick,->,>=stealth},
 		start/.style={fill=black,circle,thick},
-		label/.style={rectangle, rounded corners=5, text centered, draw=black},
-		fixlabel/.style={label, text width=2cm}
+		label/.style={rectangle, rounded corners=5, text centered, draw=black, fill=yellow!20},
+		fixlabel/.style={label, text width=2cm},
+		decision/.style={diamond, draw=black, fill=black!20},
 	]
 	\node[start] at (0, 0) (start) {};
-	\node[fixlabel] at (0, -2) (browse) {Browse Files};
-	\node[fixlabel] at (-6, -2) (ofolder) {Open Folder};
-	\node[fixlabel] at (6, -2) (ofile) {Open File};
-	\node[label, text width=3cm] at (-2, -4) (select) {Select Files and Folders};
-	\node[fixlabel] at (3, -4) (action) {Perform Action};
-	\node[label] at (6, -7) (download) {Download};
-	\node[fixlabel] at (2, -8) (manage) {Manage Files};
-	\node[fixlabel] at (-1, -10) (cut) {Cut to Buffer};
-	\node[fixlabel] at (2, -11) (copy) {Copy to Buffer};
-	\node[label] at (5, -10) (delete) {Delete};
+	\node[fixlabel, below of=start] (browse) {Browse Files};
+	\node[fixlabel, left of=browse, xshift=-2cm] (ofolder) {Open Folder};
+	\node[fixlabel, right of=browse, xshift=2cm] (ofile) {Open File};
+	\node[decision, below of=browse, yshift=0.5cm] (split1) {};
+	\node[label, left of=split1, yshift=-1.5cm, text width=3cm] (select) {Select Files and Folders};
+	\node[fixlabel, right of=split1, yshift=-1.5cm] (action) {Perform Action};
+	\node[label, right of=action, xshift=2cm] (download) {Download};
+	\node[fixlabel, below of=action] (manage) {Manage Files};
+	\node[label, left of=manage, xshift=-4cm] (delete) {Delete};
+	\node[decision, below of=manage, yshift=0.5cm] (split2) {};
+	\node[fixlabel, left of=split2, yshift=-1.5cm] (cut) {Cut to Buffer};
+	\node[fixlabel, right of=split2, yshift=-1.5cm] (copy) {Copy to Buffer};
+	\node[decision, below of=manage, yshift=-2.5cm] (split3) {};
+	\node[fixlabel, below of=split3] (paste) {Paste from Buffer};
+	\node[decision, below of=delete, yshift=-0.5cm, fill=green!20] (conf1) {Confirm?};
+	\node[label, below of=conf1, yshift=-0.5cm] (conf1yes) {Delete Files};
+	\node[label, left of=conf1, xshift=-2cm] (conf1no) {Ignore};
 
 	\draw[arrow] (start) -- (browse);
-	\draw[arrow] (browse) -- (ofile);
 	\draw[arrow] (browse) -- (ofolder);
-	\draw[arrow] (ofolder) -- (browse);
-	\draw[arrow] (browse) -- (select);
-	\draw[arrow] (browse) -- (action);
+	\draw[arrow] (browse) -- (ofile);
+	\draw[arrow] (browse) -- (split1);
+	\draw[arrow] (split1) -| (select);
+	\draw[arrow] (split1) -| (action);
 	\draw[arrow] (select) -- (action);
 	\draw[arrow] (action) -- (manage);
 	\draw[arrow] (action) -- (download);
-	\draw[arrow] (manage) -- (cut);
-	\draw[arrow] (manage) -- (copy);
+	\draw[arrow] (manage) -- (split2);
+	\draw[arrow] (split2) -| (cut);
+	\draw[arrow] (split2) -| (copy);
+	\draw[arrow] (cut) |- (split3);
+	\draw[arrow] (copy) |- (split3);
+	\draw[arrow] (split3) -- (paste);
 	\draw[arrow] (manage) -- (delete);
+	\draw[arrow] (delete) -- (conf1);
+	\draw[arrow] (conf1) -- node[anchor=east] {Yes} (conf1yes);
+	\draw[arrow] (conf1) -- node[anchor=south] {No} (conf1no);
 \end{tikzpicture}
 \end{center}
 \vfill
@@ -742,7 +760,7 @@ Representation of File Metadata in File System. \\
 Connecting to Pi and loading the page asks for credentials. \\ \\
 \includegraphics[width=\linewidth]{ss/1.cm-login.png} \\
 
-The home page will be loaded when the right credentials are entered. \\ \\
+The home page will be loaded when the right credentials are entered. It contains a list of drives that are currentyl mounted to any of the Rasberry Pi USB Ports. \\ \\
 \includegraphics[width=\linewidth]{ss/2.cm-home.png} \\
 
 Clicking on the upload button opens a dialog which the user can use to select and upload multiple files. \\ \\
@@ -783,16 +801,16 @@ A public sharing functionality can be introduced where a user selects a folder o
 \section{References}
 \vspace{2cm}
 \begin{enumerate}
-	\item Go Language Specificatoin: \quad https://go.dev/ref/spec
-	\item Go Package Documentation: \quad https://pkg.go.dev/std
-	\item Go User Guides: \quad https://go.dev/doc/
-	\item Basic Auth: \quad https://www.alexedwards.net/blog/basic-authentication-in-go
-	\item Stack Overflow: \quad https://stackoverflow.com
-	\item Google Drive Pricing: \quad https://one.google.com/about/plans
-	\item Nginx: \quad https://nginx.org/en/
-	\item OpenSSH: \quad https://www.openssh.com/
-	\item ArchLinux Wiki: \quad https://wiki.archlinux.org/
-	\item MDN Docs: \quad https://developer.mozilla.org/en-US/
+	\item Go Language Specificatoin: \quad \url{https://go.dev/ref/spec}
+	\item Go Package Documentation: \quad \url{https://pkg.go.dev/std}
+	\item Go User Guides: \quad \url{https://go.dev/doc/}
+	\item Basic Auth: \\ \quad \url{https://www.alexedwards.net/blog/basic-authentication-in-go}
+	\item Stack Overflow: \quad \url{https://stackoverflow.com}
+	\item Google Drive Pricing: \quad \url{https://one.google.com/about/plans}
+	\item Nginx: \quad \url{https://nginx.org/en/}
+	\item OpenSSH: \quad \url{https://www.openssh.com/}
+	\item ArchLinux Wiki: \quad \url{https://wiki.archlinux.org/}
+	\item MDN Docs: \quad \url{https://developer.mozilla.org/en-US/}
 \end{enumerate}
 
 
